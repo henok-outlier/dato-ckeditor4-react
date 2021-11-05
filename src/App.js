@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import CKEditor from 'ckeditor4-react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import connectToDatoCms from './connectToDatoCms'
+
+class SampleEditor extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      text: props.fieldValue
+    }
+    this.handleOnBlur = this.handleOnBlur.bind(this)
+  }
+
+  handleOnBlur () {
+    const { plugin } = this.props
+    const { text } = this.state
+    plugin.setFieldValue(plugin.fieldPath, text)
+  }
+
+  render () {
+    const { text } = this.state
+    return (
+      <CKEditor
+        data={text}
+        onChange={evt => {
+          const data = evt.editor.getData()
+          this.setState({ text: data })
+        }}
+        onBlur={this.handleOnBlur}
+      />
+    )
+  }
 }
 
-export default App;
+const mapPluginToProps = plugin => ({
+  fieldValue: plugin.getFieldValue(plugin.fieldPath)
+})
+
+export default connectToDatoCms(mapPluginToProps)(SampleEditor)
