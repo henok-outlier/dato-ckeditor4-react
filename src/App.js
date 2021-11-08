@@ -19,10 +19,10 @@ class SampleEditor extends Component {
   }
 
   render () {
-    const { text } = this.state
+    const { fieldValue } = this.props
     return (
       <CKEditor
-        data={text}
+        data={fieldValue}
         onChange={evt => {
           const data = evt.editor.getData()
           this.setState({ text: data })
